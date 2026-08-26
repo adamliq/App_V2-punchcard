@@ -23,16 +23,22 @@
     </splunk-control-group>
     <div>
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
-            Categorical mode settings
+            Categorical mode — colors each distinct value of the 4th "by" field
+            with its own solid color. Leave Category colors blank to use
+            Splunk's default categorical palette.
         </span>
     </div>
-    <splunk-control-group label="Category colors (hex, comma-separated)">
+    <splunk-control-group label="Category colors (hex, comma-separated, one per category in field-value order)">
         <splunk-text-input name="{{VIZ_NAMESPACE}}.categoryColors" value=""></splunk-text-input>
     </splunk-control-group>
     <div>
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
-            Threshold mode settings — colors the metric (count) itself by numeric
-            boundary, no separate color field needed
+            Threshold mode — colors the count metric itself by numeric
+            boundary; no separate color field needed. A value equal to a
+            boundary falls into the bucket above it (e.g. with boundaries
+            10,20 a value of 20 gets the 3rd color, not the 2nd). Example:
+            boundaries 10,20 with colors 65778A,D41F1F,118832 gives
+            count&lt;10 → 65778A, 10≤count&lt;20 → D41F1F, count≥20 → 118832.
         </span>
     </div>
     <splunk-control-group label="Threshold boundaries (ascending numbers, comma-separated)">
@@ -43,19 +49,21 @@
     </splunk-control-group>
     <div>
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
-            Field value mode — no settings here. The 4th column in your search
-            results (the same one used for Categorical/Sequential coloring) is
-            used directly as each circle's CSS color, computed however you
-            like in SPL, e.g.
-            "| stats count by x y | eval colour=case(count&lt;10,"#65778A",
-            count&lt;=20,"#D41F1F",count&gt;20,"#118832")". Accepts any valid
-            CSS color (hex, rgb(), named colors); blank values fall back to
-            the default blue.
+            Field value mode — no settings here. The 4th "by" field's own
+            value is used directly as each circle's CSS color, computed
+            however you like in SPL, e.g.:
+            stats count by x y | eval colour=case(count&lt;10,"65778A",
+            count&lt;=20,"D41F1F",count&gt;20,"118832") | table x y count colour.
+            Accepts any valid CSS color (hex, rgb(), hsl(), named colors);
+            blank values fall back to the default blue. Hex codes work with
+            or without a leading #.
         </span>
     </div>
     <div>
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
-            Sequential mode settings
+            Sequential mode — interpolates a smooth gradient between Min
+            color and Max color across Number of bins, driven by a numeric
+            4th "by" field (a separate field from the count metric).
         </span>
     </div>
     <splunk-control-group label="Min color">

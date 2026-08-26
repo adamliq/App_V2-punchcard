@@ -9,6 +9,58 @@ app.
 - Source: [`v2_punchcard_visualisation/`](./v2_punchcard_visualisation)
 - Original vendor package kept for reference: `punchcard-custom-visualization_150 (1).tgz`
 
+## Color modes
+
+Set `display.visualizations.custom.v2_punchcard_visualisation.punchcard.colorMode`
+(or the "Color mode" field in the Format panel) to one of the following. All
+examples below also work as `<option>` tags in dashboard XML or
+`display.visualizations.custom.v2_punchcard_visualisation.punchcard.*` keys in
+`savedsearches.conf`. See `v2_punchcard_visualisation/default/data/ui/views/gallery.xml`
+for complete, runnable panels using the bundled `bikeshare.csv` lookup.
+
+| colorMode | Needs a 4th "by" field? | What colors it | Extra properties |
+|---|---|---|---|
+| `categorical` (default) | Yes, any type | One solid color per distinct field value | `categoryColors` (optional) |
+| `sequential` | Yes, numeric | Smooth gradient across the field's numeric range | `minColor`, `maxColor`, `numOfBins` |
+| `threshold` | No — colors `count` itself | Discrete buckets by numeric boundary | `thresholdValues`, `thresholdColors` |
+| `field` | Yes, a color string | Uses the field's own value as-is | none — compute the color in SPL |
+
+Hex colors accept a leading `#` or not (`65778A` and `#65778A` both work) in
+`categoryColors`, `thresholdColors`, and `field` mode.
+
+**Categorical with custom colors** — one color per distinct value, in the
+order the values are first encountered; extra categories fall back to
+Splunk's default palette:
+```xml
+<option name="v2_punchcard_visualisation.punchcard.useColors">true</option>
+<option name="v2_punchcard_visualisation.punchcard.colorMode">categorical</option>
+<option name="v2_punchcard_visualisation.punchcard.categoryColors">1f77b4,ff7f0e,2ca02c</option>
+```
+
+**Threshold** — colors `count` (the same value driving circle size) by
+ascending numeric boundary; a value equal to a boundary falls into the
+bucket *above* it:
+```xml
+<option name="v2_punchcard_visualisation.punchcard.useColors">true</option>
+<option name="v2_punchcard_visualisation.punchcard.colorMode">threshold</option>
+<option name="v2_punchcard_visualisation.punchcard.thresholdValues">10,20</option>
+<option name="v2_punchcard_visualisation.punchcard.thresholdColors">65778A,D41F1F,118832</option>
+```
+
+**Field value** — the color is whatever your search computes, e.g.:
+```spl
+... | stats count by x y
+| eval colour=case(count<10,"65778A", count<=20,"D41F1F", count>20,"118832")
+```
+```xml
+<option name="v2_punchcard_visualisation.punchcard.useColors">true</option>
+<option name="v2_punchcard_visualisation.punchcard.colorMode">field</option>
+```
+`colour` must be the 4th "by"/table column (same position as the color field
+in `categorical`/`sequential`). Accepts any valid CSS color, not just hex —
+`rgb()`, `hsl()`, and named colors all work. A blank value falls back to the
+default blue.
+
 ## AppInspect compliance
 
 Validated with Splunk AppInspect (`precert` mode, all tags): **0 errors, 0 failures**.
@@ -33,6 +85,12 @@ check_for_updates` stays `true`.
 
 ## Changelog
 
+- **1.8.1** — Docs and examples pass, no behavior change: added a "Color
+  modes" reference section to this README, added `gallery.xml` example
+  panels for `categoryColors`, `threshold`, and `field` modes (using the
+  bundled `bikeshare.csv` lookup, runnable out of the box), and polished the
+  formatter panel's help text for all four color modes for clarity and
+  consistency.
 - **1.8.0** — Added a `field` color mode: the 4th "by" column in the search
   results is used directly, as-is, as each circle's CSS color — compute it
   however you like in SPL (e.g.
