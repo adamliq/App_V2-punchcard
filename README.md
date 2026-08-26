@@ -31,6 +31,18 @@ flags that `check_for_updates = true` is only recommended for apps published to
 Splunkbase — `check_for_updates` must **not** be disabled, so `[package]
 check_for_updates` stays `true`.
 
+## Changelog
+
+- **1.6.0** — Categorical color mode now accepts an optional
+  `categoryColors` property: a comma-separated list of hex colors applied,
+  in order, to the distinct values of the color field. Any category beyond
+  the list, or all categories when the field is left blank, fall back to
+  Splunk's built-in categorical palette (unchanged default behavior).
+- **1.5.1** — Fixed an unbounded circle radius: low-cardinality data (few
+  distinct x/y groups) could produce circles far larger than the panel,
+  clipped at its edge. The radius scale is now capped at 40px.
+- **1.5.0** — Initial migration from the Splunkbase "Punchcard" package.
+
 ## Packaging
 
 ```
