@@ -33,6 +33,16 @@ check_for_updates` stays `true`.
 
 ## Changelog
 
+- **1.7.0** — Added a `threshold` color mode: colors circles by numeric
+  boundaries on the `count` metric itself (the same value that drives circle
+  size), so no separate color field is needed. Configured with
+  `thresholdValues` (ascending, comma-separated numbers) and
+  `thresholdColors` (comma-separated hex, one more entry than boundaries).
+  A value is compared against each boundary in ascending order; hitting a
+  boundary exactly puts it in the bucket *above* that boundary (e.g. with
+  `thresholdValues=10,20`, a value of exactly 20 gets the third color, not
+  the second). Missing/extra colors fall back to Splunk's default palette,
+  same as `categoryColors`.
 - **1.6.0** — Categorical color mode now accepts an optional
   `categoryColors` property: a comma-separated list of hex colors applied,
   in order, to the distinct values of the color field. Any category beyond

@@ -17,6 +17,7 @@
         <splunk-select name="{{VIZ_NAMESPACE}}.colorMode" value="categorical">
             <option value="categorical">Categorical</option>
             <option value="sequential">Sequential</option>
+            <option value="threshold">Threshold</option>
         </splunk-select>
     </splunk-control-group>
     <div>
@@ -26,6 +27,18 @@
     </div>
     <splunk-control-group label="Category colors (hex, comma-separated)">
         <splunk-text-input name="{{VIZ_NAMESPACE}}.categoryColors" value=""></splunk-text-input>
+    </splunk-control-group>
+    <div>
+        <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
+            Threshold mode settings — colors the metric (count) itself by numeric
+            boundary, no separate color field needed
+        </span>
+    </div>
+    <splunk-control-group label="Threshold boundaries (ascending numbers, comma-separated)">
+        <splunk-text-input name="{{VIZ_NAMESPACE}}.thresholdValues" value=""></splunk-text-input>
+    </splunk-control-group>
+    <splunk-control-group label="Threshold colors (hex, comma-separated, one more than boundaries)">
+        <splunk-text-input name="{{VIZ_NAMESPACE}}.thresholdColors" value=""></splunk-text-input>
     </splunk-control-group>
     <div>
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
