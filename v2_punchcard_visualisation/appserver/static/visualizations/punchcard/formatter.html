@@ -18,6 +18,7 @@
             <option value="categorical">Categorical</option>
             <option value="sequential">Sequential</option>
             <option value="threshold">Threshold</option>
+            <option value="field">Field value (SPL-defined)</option>
         </splunk-select>
     </splunk-control-group>
     <div>
@@ -40,6 +41,18 @@
     <splunk-control-group label="Threshold colors (hex, comma-separated, one more than boundaries)">
         <splunk-text-input name="{{VIZ_NAMESPACE}}.thresholdColors" value=""></splunk-text-input>
     </splunk-control-group>
+    <div>
+        <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
+            Field value mode — no settings here. The 4th column in your search
+            results (the same one used for Categorical/Sequential coloring) is
+            used directly as each circle's CSS color, computed however you
+            like in SPL, e.g.
+            "| stats count by x y | eval colour=case(count&lt;10,"#65778A",
+            count&lt;=20,"#D41F1F",count&gt;20,"#118832")". Accepts any valid
+            CSS color (hex, rgb(), named colors); blank values fall back to
+            the default blue.
+        </span>
+    </div>
     <div>
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
             Sequential mode settings

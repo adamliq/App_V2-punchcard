@@ -33,6 +33,16 @@ check_for_updates` stays `true`.
 
 ## Changelog
 
+- **1.8.0** — Added a `field` color mode: the 4th "by" column in the search
+  results is used directly, as-is, as each circle's CSS color — compute it
+  however you like in SPL (e.g.
+  `| eval colour=case(count<10,"#65778A",count<=20,"#D41F1F",count>20,"#118832")`)
+  rather than being limited to the fixed `categoryColors`/`thresholdValues`
+  config set at the panel level. Blank values fall back to the default blue.
+  Also hardened `categoryColors`, `thresholdColors`, and `field` mode to
+  accept bare hex codes without a leading `#` (e.g. `65778A`), auto-prepending
+  it — matches CSS's own requirement that hex colors start with `#`, which a
+  bare code silently fails.
 - **1.7.0** — Added a `threshold` color mode: colors circles by numeric
   boundaries on the `count` metric itself (the same value that drives circle
   size), so no separate color field is needed. Configured with
