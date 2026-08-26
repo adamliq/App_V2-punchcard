@@ -132,4 +132,66 @@
       </viz>
     </panel>
   </row>
+  <row>
+    <panel>
+      <title>Categorical Colorization with custom hex colors (new in 1.6.0)</title>
+      <viz type="v2_punchcard_visualisation.punchcard">
+        <title>Member = blue, Casual = orange (categoryColors, no leading # needed)</title>
+        <search>
+          <query>| inputlookup bikeshare.csv
+| eval duration = duration_ms/60000
+| eval is_member = if(member_type=="Registered", 1, 0)
+| eval is_casual = if(member_type=="Casual", 1, 0)
+| stats avg(duration_ms) sum(is_member) as sum_m, sum(is_casual) as sum_c by date_hour date_wday
+| eval prevalent_member_type = if(sum_m &gt; sum_c, "Member", "Casual")
+| fields - sum_m, sum_c</query>
+          <earliest></earliest>
+          <latest></latest>
+        </search>
+        <option name="v2_punchcard_visualisation.punchcard.useColors">true</option>
+        <option name="v2_punchcard_visualisation.punchcard.colorMode">categorical</option>
+        <option name="v2_punchcard_visualisation.punchcard.categoryColors">1f77b4,ff7f0e</option>
+        <option name="v2_punchcard_visualisation.punchcard.radiusScale">local</option>
+        <option name="v2_punchcard_visualisation.punchcard.numOfBins">6</option>
+        <option name="v2_punchcard_visualisation.punchcard.labelRotation">angle</option>
+      </viz>
+    </panel>
+    <panel>
+      <title>Threshold Colorization by ride volume (new in 1.7.0)</title>
+      <viz type="v2_punchcard_visualisation.punchcard">
+        <title>Colors the count metric itself - no separate color field needed</title>
+        <search>
+          <query>| inputlookup bikeshare.csv
+| stats count by date_hour date_wday</query>
+          <earliest></earliest>
+          <latest></latest>
+        </search>
+        <option name="v2_punchcard_visualisation.punchcard.useColors">true</option>
+        <option name="v2_punchcard_visualisation.punchcard.colorMode">threshold</option>
+        <option name="v2_punchcard_visualisation.punchcard.thresholdValues">20,60</option>
+        <option name="v2_punchcard_visualisation.punchcard.thresholdColors">65778A,D41F1F,118832</option>
+        <option name="v2_punchcard_visualisation.punchcard.radiusScale">local</option>
+        <option name="v2_punchcard_visualisation.punchcard.labelRotation">horizontal</option>
+      </viz>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Field Value Colorization, SPL-defined (new in 1.8.0)</title>
+      <viz type="v2_punchcard_visualisation.punchcard">
+        <title>Color computed entirely in SPL via eval case(), same buckets as the Threshold example</title>
+        <search>
+          <query>| inputlookup bikeshare.csv
+| stats count by date_hour date_wday
+| eval colour=case(count&lt;20,"65778A", count&lt;=60,"D41F1F", count&gt;60,"118832")</query>
+          <earliest></earliest>
+          <latest></latest>
+        </search>
+        <option name="v2_punchcard_visualisation.punchcard.useColors">true</option>
+        <option name="v2_punchcard_visualisation.punchcard.colorMode">field</option>
+        <option name="v2_punchcard_visualisation.punchcard.radiusScale">local</option>
+        <option name="v2_punchcard_visualisation.punchcard.labelRotation">horizontal</option>
+      </viz>
+    </panel>
+  </row>
 </dashboard>
