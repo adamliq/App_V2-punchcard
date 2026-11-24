@@ -1,0 +1,173 @@
+<dashboard version="2" theme="light">
+    <label>Studio Gallery</label>
+    <description>Punchcard visualization examples built with Dashboard Studio, using the bundled bikeshare.csv lookup. See the classic "Punchcard Gallery" view for the same examples in Simple XML.</description>
+    <definition><![CDATA[
+{
+	"visualizations": {
+		"viz_categorical": {
+			"type": "v2_punchcard_visualisation.punchcard",
+			"dataSources": {
+				"primary": "ds_categorical"
+			},
+			"title": "Categorical with custom hex colors",
+			"options": {
+				"v2_punchcard_visualisation.punchcard.useColors": "true",
+				"v2_punchcard_visualisation.punchcard.colorMode": "categorical",
+				"v2_punchcard_visualisation.punchcard.categoryColors": "1f77b4,ff7f0e"
+			}
+		},
+		"viz_threshold": {
+			"type": "v2_punchcard_visualisation.punchcard",
+			"dataSources": {
+				"primary": "ds_threshold"
+			},
+			"title": "Threshold: colors the count metric itself",
+			"options": {
+				"v2_punchcard_visualisation.punchcard.useColors": "true",
+				"v2_punchcard_visualisation.punchcard.colorMode": "threshold",
+				"v2_punchcard_visualisation.punchcard.thresholdValues": "20,60",
+				"v2_punchcard_visualisation.punchcard.thresholdColors": "65778A,D41F1F,118832"
+			}
+		},
+		"viz_field": {
+			"type": "v2_punchcard_visualisation.punchcard",
+			"dataSources": {
+				"primary": "ds_field"
+			},
+			"title": "Field value: color computed entirely in SPL",
+			"options": {
+				"v2_punchcard_visualisation.punchcard.useColors": "true",
+				"v2_punchcard_visualisation.punchcard.colorMode": "field"
+			}
+		},
+		"viz_sequential": {
+			"type": "v2_punchcard_visualisation.punchcard",
+			"dataSources": {
+				"primary": "ds_sequential"
+			},
+			"title": "Sequential gradient (separate numeric color field)",
+			"options": {
+				"v2_punchcard_visualisation.punchcard.useColors": "true",
+				"v2_punchcard_visualisation.punchcard.colorMode": "sequential",
+				"v2_punchcard_visualisation.punchcard.minColor": "#f7bc38",
+				"v2_punchcard_visualisation.punchcard.maxColor": "#d93f3c",
+				"v2_punchcard_visualisation.punchcard.numOfBins": "6"
+			}
+		}
+	},
+	"dataSources": {
+		"ds_categorical": {
+			"type": "ds.search",
+			"options": {
+				"query": "| inputlookup bikeshare.csv\n| eval duration = duration_ms/60000\n| eval is_member = if(member_type==\"Registered\", 1, 0)\n| eval is_casual = if(member_type==\"Casual\", 1, 0)\n| stats avg(duration_ms) sum(is_member) as sum_m, sum(is_casual) as sum_c by date_hour date_wday\n| eval prevalent_member_type = if(sum_m > sum_c, \"Member\", \"Casual\")\n| fields - sum_m, sum_c"
+			},
+			"name": "Search_categorical"
+		},
+		"ds_threshold": {
+			"type": "ds.search",
+			"options": {
+				"query": "| inputlookup bikeshare.csv\n| stats count by date_hour date_wday"
+			},
+			"name": "Search_threshold"
+		},
+		"ds_field": {
+			"type": "ds.search",
+			"options": {
+				"query": "| inputlookup bikeshare.csv\n| stats count by date_hour date_wday\n| eval colour=case(count<20,\"65778A\", count<=60,\"D41F1F\", count>60,\"118832\")"
+			},
+			"name": "Search_field"
+		},
+		"ds_sequential": {
+			"type": "ds.search",
+			"options": {
+				"query": "| inputlookup bikeshare.csv\n| eval duration = duration_ms/60000\n| stats count median(duration) by date_hour date_wday"
+			},
+			"name": "Search_sequential"
+		}
+	},
+	"defaults": {
+		"dataSources": {
+			"ds.search": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			},
+			"ds.spl2": {
+				"options": {
+					"queryParameters": {
+						"latest": "$global_time.latest$",
+						"earliest": "$global_time.earliest$"
+					}
+				}
+			}
+		},
+		"visualizations": {
+			"global": {
+				"showProgressBar": true
+			}
+		}
+	},
+	"inputs": {
+		"input_global_trp": {
+			"type": "input.timerange",
+			"options": {
+				"token": "global_time",
+				"defaultValue": "-24h@h,now"
+			},
+			"title": "Global Time Range"
+		}
+	},
+	"layout": {
+		"options": {},
+		"globalInputs": [
+			"input_global_trp"
+		],
+		"tabs": {
+			"items": [
+				{
+					"layoutId": "layout_1",
+					"label": "New tab"
+				}
+			]
+		},
+		"layoutDefinitions": {
+			"layout_1": {
+				"type": "absolute",
+				"structure": [
+					{
+						"item": "viz_categorical",
+						"type": "block",
+						"position": { "x": 0, "y": 0, "w": 700, "h": 320 }
+					},
+					{
+						"item": "viz_threshold",
+						"type": "block",
+						"position": { "x": 720, "y": 0, "w": 700, "h": 320 }
+					},
+					{
+						"item": "viz_field",
+						"type": "block",
+						"position": { "x": 0, "y": 340, "w": 700, "h": 320 }
+					},
+					{
+						"item": "viz_sequential",
+						"type": "block",
+						"position": { "x": 720, "y": 340, "w": 700, "h": 320 }
+					}
+				],
+				"options": {
+					"width": 1440,
+					"height": 700,
+					"display": "auto"
+				}
+			}
+		}
+	},
+	"description": "Punchcard visualization examples built with Dashboard Studio, using the bundled bikeshare.csv lookup.",
+	"title": "Studio Gallery"
+}
+    ]]></definition>
+</dashboard>

@@ -4,10 +4,23 @@ Splunk custom visualization app, migrated from the Splunkbase "Punchcard" packag
 (`punchcard-custom-visualization_150 (1).tgz`) into a new, independently-installable
 app.
 
+Splunk now ships a native built-in "Punchcard" visualization in Dashboard Studio.
+This app remains useful alongside it specifically for its four configurable color
+modes — categorical with custom hex colors, a sequential gradient, numeric
+threshold buckets on the count itself, and field-value colors computed entirely
+in SPL — none of which the built-in visualization offers. It also works inside
+Dashboard Studio (confirmed by adding it to a Studio dashboard, searching real
+data, and configuring every color mode through Studio's native Configuration
+panel) as well as Classic (Simple XML) dashboards, so you're not limited to one
+dashboard type.
+
 - App ID (directory / `app.conf` id / `app.manifest` id.name): `v2_punchcard_visualisation`
 - Display label: `v2-Punchcard-visualisation`
 - Source: [`v2_punchcard_visualisation/`](./v2_punchcard_visualisation)
 - Original vendor package kept for reference: `punchcard-custom-visualization_150 (1).tgz`
+- Examples: [`gallery.xml`](./v2_punchcard_visualisation/default/data/ui/views/gallery.xml)
+  (Classic) and [`studio_gallery.xml`](./v2_punchcard_visualisation/default/data/ui/views/studio_gallery.xml)
+  (Dashboard Studio), both built on the bundled `bikeshare.csv` lookup
 
 ## Color modes
 
@@ -15,8 +28,9 @@ Set `display.visualizations.custom.v2_punchcard_visualisation.punchcard.colorMod
 (or the "Color mode" field in the Format panel) to one of the following. All
 examples below also work as `<option>` tags in dashboard XML or
 `display.visualizations.custom.v2_punchcard_visualisation.punchcard.*` keys in
-`savedsearches.conf`. See `v2_punchcard_visualisation/default/data/ui/views/gallery.xml`
-for complete, runnable panels using the bundled `bikeshare.csv` lookup.
+`savedsearches.conf`. See `gallery.xml` (Classic) and `studio_gallery.xml`
+(Dashboard Studio) for complete, runnable panels using the bundled
+`bikeshare.csv` lookup.
 
 | colorMode | Needs a 4th "by" field? | What colors it | Extra properties |
 |---|---|---|---|
@@ -83,8 +97,39 @@ flags that `check_for_updates = true` is only recommended for apps published to
 Splunkbase — `check_for_updates` must **not** be disabled, so `[package]
 check_for_updates` stays `true`.
 
+A second warning, `check_for_legacy_custom_visualizations`, is also accepted:
+newer Splunk versions recommend migrating custom visualizations to the
+Studio-native `studio_visualization` framework (a full rewrite in Splunk's
+React/TypeScript SDK). This app keeps the proven legacy
+`SplunkVisualizationBase` framework from the original vendor package — and,
+per the 1.9.0 testing below, it already works correctly inside Dashboard
+Studio dashboards despite being "legacy", so there's no functional gap to
+justify that rewrite right now.
+
 ## Changelog
 
+- **1.9.0** — Live-tested the whole app in a real Splunk Enterprise 10.6.2.5
+  Docker instance (classic dashboards, Dashboard Studio, the Format panel,
+  and dark theme) and acted on what that testing surfaced:
+  - Format panel now only shows the settings/help text for the currently
+    selected `colorMode`, instead of all four modes' sections at once.
+    Implemented with a small, self-contained `MutationObserver` in
+    `visualization.js` (no Splunk core files touched) that reacts to the
+    `colorMode` control's value; falls back gracefully to "show everything"
+    if Splunk ever changes that control's structure.
+  - X-axis labels no longer overlap illegibly on dense (e.g. 24-hour)
+    categorical axes in the default horizontal label mode — now
+    auto-switches to angled rendering above 12 categories, regardless of
+    the `labelRotation` setting.
+  - Added `maxRadius`: the circle-size ceiling (previously hardcoded at
+    40px since 1.5.1) is now a formatter property, so it can be tuned per
+    panel instead of fixed in code.
+  - Added `studio_gallery.xml`: a Dashboard Studio example dashboard
+    (confirmed working live) alongside the existing Classic `gallery.xml`,
+    showing all four color modes.
+  - Clarified in the app description/README that this app's value, now that
+    Splunk ships a native built-in Punchcard visualization in Dashboard
+    Studio, is specifically its custom color modes.
 - **1.8.1** — Docs and examples pass, no behavior change: added a "Color
   modes" reference section to this README, added `gallery.xml` example
   panels for `categoryColors`, `threshold`, and `field` modes (using the

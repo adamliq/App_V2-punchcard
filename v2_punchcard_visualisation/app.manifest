@@ -5,7 +5,7 @@
     "id": {
       "group": null,
       "name": "v2_punchcard_visualisation",
-      "version": "1.8.1"
+      "version": "1.9.0"
     },
     "author": [
       {
@@ -15,7 +15,7 @@
       }
     ],
     "releaseDate": null,
-    "description": "This custom visualization app contains a Punchcard. Punchcards can visualize cyclical trends in your data. This visualization shows circles representing a metric aggregated over two dimensions, such as hours of the day and days of the week. Using a punchcard, you can see relative values for a metric where the dimensions intersect.",
+    "description": "This custom visualization app contains a Punchcard. Punchcards can visualize cyclical trends in your data. This visualization shows circles representing a metric aggregated over two dimensions, such as hours of the day and days of the week. Using a punchcard, you can see relative values for a metric where the dimensions intersect. Beyond Splunk's built-in Punchcard visualization, this app adds four configurable color modes: categorical with custom hex colors, a sequential gradient, numeric threshold buckets on the count itself, and field-value colors computed entirely in SPL.",
     "classification": {
       "intendedAudience": null,
       "categories": [],
@@ -43,6 +43,10 @@
   "inputGroups": null,
   "incompatibleApps": null,
   "platformRequirements": null,
-  "supportedDeployments": ["*"],
-  "targetWorkloads": ["_search_heads"]
+  "supportedDeployments": [
+    "*"
+  ],
+  "targetWorkloads": [
+    "_search_heads"
+  ]
 }
