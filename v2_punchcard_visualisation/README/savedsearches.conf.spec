@@ -1,6 +1,7 @@
 [<stanza name>]
 display.visualizations.custom.v2_punchcard_visualisation.punchcard.radiusScale = <string>
-display.visualizations.custom.v2_punchcard_visualisation.punchcard.useColors = <string> 
+display.visualizations.custom.v2_punchcard_visualisation.punchcard.maxRadius = <int>
+display.visualizations.custom.v2_punchcard_visualisation.punchcard.useColors = <string>
 display.visualizations.custom.v2_punchcard_visualisation.punchcard.colorMode = <string>
 display.visualizations.custom.v2_punchcard_visualisation.punchcard.categoryColors = <string>
 display.visualizations.custom.v2_punchcard_visualisation.punchcard.thresholdValues = <string>

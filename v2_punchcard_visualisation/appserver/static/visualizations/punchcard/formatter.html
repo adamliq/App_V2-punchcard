@@ -3,7 +3,10 @@
         <splunk-radio-input name="{{VIZ_NAMESPACE}}.radiusScale" value="local">
             <option value="local">Row</option>
             <option value="global">Global</option>
-        </splunk-radio-input> 
+        </splunk-radio-input>
+    </splunk-control-group>
+    <splunk-control-group label="Max circle radius, px (default 40)">
+        <splunk-text-input name="{{VIZ_NAMESPACE}}.maxRadius" value=""></splunk-text-input>
     </splunk-control-group>
 </form>
 <form class="splunk-formatter-section" section-label="Color">
@@ -21,17 +24,17 @@
             <option value="field">Field value (SPL-defined)</option>
         </splunk-select>
     </splunk-control-group>
-    <div>
+    <div data-color-mode-section="categorical">
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
             Categorical mode — colors each distinct value of the 4th "by" field
             with its own solid color. Leave Category colors blank to use
             Splunk's default categorical palette.
         </span>
     </div>
-    <splunk-control-group label="Category colors (hex, comma-separated, one per category in field-value order)">
+    <splunk-control-group data-color-mode-section="categorical" label="Category colors (hex, comma-separated, one per category in field-value order)">
         <splunk-text-input name="{{VIZ_NAMESPACE}}.categoryColors" value=""></splunk-text-input>
     </splunk-control-group>
-    <div>
+    <div data-color-mode-section="threshold">
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
             Threshold mode — colors the count metric itself by numeric
             boundary; no separate color field needed. A value equal to a
@@ -41,13 +44,13 @@
             count&lt;10 → 65778A, 10≤count&lt;20 → D41F1F, count≥20 → 118832.
         </span>
     </div>
-    <splunk-control-group label="Threshold boundaries (ascending numbers, comma-separated)">
+    <splunk-control-group data-color-mode-section="threshold" label="Threshold boundaries (ascending numbers, comma-separated)">
         <splunk-text-input name="{{VIZ_NAMESPACE}}.thresholdValues" value=""></splunk-text-input>
     </splunk-control-group>
-    <splunk-control-group label="Threshold colors (hex, comma-separated, one more than boundaries)">
+    <splunk-control-group data-color-mode-section="threshold" label="Threshold colors (hex, comma-separated, one more than boundaries)">
         <splunk-text-input name="{{VIZ_NAMESPACE}}.thresholdColors" value=""></splunk-text-input>
     </splunk-control-group>
-    <div>
+    <div data-color-mode-section="field">
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
             Field value mode — no settings here. The 4th "by" field's own
             value is used directly as each circle's CSS color, computed
@@ -59,20 +62,20 @@
             or without a leading #.
         </span>
     </div>
-    <div>
+    <div data-color-mode-section="sequential">
         <span style="display: block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
             Sequential mode — interpolates a smooth gradient between Min
             color and Max color across Number of bins, driven by a numeric
             4th "by" field (a separate field from the count metric).
         </span>
     </div>
-    <splunk-control-group label="Min color">
+    <splunk-control-group data-color-mode-section="sequential" label="Min color">
         <splunk-color-picker name="{{VIZ_NAMESPACE}}.minColor" value="#d93f3c"></splunk-color-picker>
     </splunk-control-group>
-    <splunk-control-group label="Max color">
+    <splunk-control-group data-color-mode-section="sequential" label="Max color">
         <splunk-color-picker name="{{VIZ_NAMESPACE}}.maxColor" value="#3fc77a"></splunk-color-picker>
     </splunk-control-group>
-    <splunk-control-group label="Number of bins">
+    <splunk-control-group data-color-mode-section="sequential" label="Number of bins">
         <splunk-select name="{{VIZ_NAMESPACE}}.numOfBins" value="6">
             <option value="3">3</option>
             <option value="4">4</option>
